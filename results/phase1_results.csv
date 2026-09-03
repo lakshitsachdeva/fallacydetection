@@ -1,0 +1,2 @@
+Model,Accuracy,Precision,Recall,Macro F1,Weighted F1
+CNN baseline (Phase 1),0.5284,0.4666,0.4658,0.4594,0.5179
