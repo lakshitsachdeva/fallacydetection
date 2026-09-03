@@ -66,10 +66,14 @@ class count, size, format, splits, single- vs multi-label nature, domain,
 availability, license, and mutual compatibility first. If a dataset cannot
 reasonably be integrated in Phase 1, explain why instead of forcing it.
 
-## 4. Starting references — verify before use
+## 4. Starting references — verified fact sheet provided
 
-No pre-verified reference list is provided. You must locate and verify every
-source yourself. Candidate datasets named by the project brief (verify the
+`VERIFIED_REFERENCES.md` (repo root) contains a fact sheet verified by
+fetching each source on 2026-09-03: canonical ACL Anthology URLs, official
+GitHub repos, class counts, sizes, splits, single/multi-label nature, and
+reported baselines for LOGIC, LOGICCLIMATE, MAFALDA, CoCoLoFa, plus 4 other
+verified prior works. Use it as your starting point, but re-open each URL
+yourself when you cite it. Anything marked UNVERIFIED must stay marked. Candidate datasets named by the project brief (verify the
 original papers and official repos via ACL Anthology search, Google Scholar,
 and official GitHub/Hugging Face pages before citing anything):
 
@@ -133,8 +137,14 @@ work into `notebooks/phase1_fallacylens.ipynb`. Both must be consistent.
   dataset-specific for initial experiments.
 - Recommend and justify the **primary Phase 1 dataset** — the simplest
   scientifically defensible choice for a first implementation. (Expected
-  default: LOGIC — single-label, 13 classes, ~2.4k samples, plain CSVs on
-  GitHub — but confirm from the actual source before committing.)
+  default: LOGIC — 13 classes, 2,449 samples, plain CSVs on GitHub. NOTE:
+  per the verified fact sheet, LOGIC is multi-label per the original paper;
+  confirm from the actual source. If confirmed multi-label, either (a) adapt
+  the baseline to sigmoid + BCEWithLogitsLoss and report micro/macro F1, or
+  (b) justify restricting to single-label examples — document the choice.
+  CoCoLoFa (single-label, 7.7k comments) is the scientifically valid
+  alternative if a single-label setup is preferred; justify whichever you
+  pick with evidence.)
 
 ### PART 5–11 — Implementation (notebook `notebooks/phase1_fallacylens.ipynb`)
 
@@ -239,3 +249,12 @@ report/paper). Roadmap only — do not execute.
   of a student research project — a solid foundation beats a flashy one.
 - Language/style: academic but accessible; the audience is a B.Tech student
   and their faculty mentor.
+
+## 9. Presentation support files (final step before the completion marker)
+
+`PRESENTATION_GUIDE.md` and `DEMO_CHECKLIST.md` exist in the repo root. Before
+writing `report/PHASE1_COMPLETE.md`: open `PRESENTATION_GUIDE.md` and replace
+every `{{FILL: ...}}` slot with the real values from your executed run (dataset
+name, class count, hyperparameters, metrics). Values must match
+`results/phase1_results.csv` and the notebook exactly. Tick no boxes in
+`DEMO_CHECKLIST.md` — that file is for the student.
