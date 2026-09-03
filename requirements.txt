@@ -1,0 +1,11 @@
+# FallacyLens Phase 1 - Python dependencies (CPU-friendly)
+# On the server a prepared venv already exists at ~/fallacydetection/.venv
+# On Google Colab: pip install -r requirements.txt (torch is preinstalled there)
+pandas>=2.0
+numpy>=1.26
+matplotlib>=3.8
+scikit-learn>=1.4
+torch>=2.2
+jupyter>=1.0
+nbconvert>=7.0
+ipykernel>=6.29

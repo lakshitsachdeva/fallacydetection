@@ -1,0 +1,19 @@
+# Python / notebook noise
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+
+# Virtual environment
+.venv/
+
+# Run logs
+logs/
+
+# Downloaded raw datasets (re-downloadable; keep the download code, not the data)
+data/raw/
+
+# Large model artifacts (keep small checkpoints only if practical)
+*.pt
+*.pth
+*.bin
+!.gitkeep
