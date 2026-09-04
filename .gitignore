@@ -17,3 +17,4 @@ data/raw/
 *.pth
 *.bin
 !.gitkeep
+.setup-backup/
