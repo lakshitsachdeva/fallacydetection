@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08111f" />
+    <meta
+      name="description"
+      content="FallacyLens visual story: an animated, presentation-ready tour of how neural models read an argument."
+    />
+    <title>FallacyLens — Model Story</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="FallacyLens home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-copy">
+          <strong>FALLACY<span>LENS</span></strong>
+          <small>MODEL STORY / LIVE VISUALIZER</small>
+        </span>
+      </a>
+
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#story">The journey</a>
+        <a href="#models">Model lenses</a>
+        <a href="#lab">Try an argument</a>
+      </nav>
+
+      <div class="topbar-actions">
+        <button class="icon-button" id="motionToggle" type="button" aria-pressed="false" title="Toggle motion">
+          <span class="status-dot"></span>
+          <span class="button-label">Motion on</span>
+        </button>
+        <button class="primary-button compact" id="presentButton" type="button" aria-pressed="false">
+          <span class="button-icon">↗</span> Present
+        </button>
+      </div>
+    </header>
+
+    <main id="main-content" tabindex="-1">
+      <section class="hero section-pad" id="top">
+        <div class="hero-copy reveal">
+          <div class="eyebrow"><span class="eyebrow-line"></span> AN ARGUMENT, UNDER THE LENS</div>
+          <h1>See a sentence<br /><em>become a signal.</em></h1>
+          <p class="hero-lede">
+            FallacyLens turns a messy argument into a sequence we can inspect:
+            words, patterns, context, and a reasoned model signal — never a magical black box.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-button" id="startJourney" type="button">
+              Start the story <span aria-hidden="true">↓</span>
+            </button>
+            <button class="text-button" id="tryDemo" type="button">Try a live example <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="hero-meta" aria-label="Project scope">
+            <span><b>13</b> project labels</span>
+            <span><b>6</b> browser cues</span>
+            <span><b>3</b> model lenses</span>
+            <span><b>1</b> inspectable story</span>
+          </div>
+        </div>
+
+        <div class="hero-stage reveal delay-one" aria-label="Animated neural signal illustration">
+          <div class="stage-topline"><span>LIVE EXPLANATION</span><span class="live-pill" id="motionStatus"><i></i> playing</span></div>
+          <canvas id="neuralCanvas" width="760" height="560" aria-hidden="true"></canvas>
+          <div class="stage-grid" aria-hidden="true"></div>
+          <div class="orbit orbit-large" aria-hidden="true"></div>
+          <div class="orbit orbit-small" aria-hidden="true"></div>
+          <div class="signal-orb" aria-hidden="true"><span class="orb-core"></span><span class="orb-ring"></span></div>
+          <div class="floating-token token-one">because</div>
+          <div class="floating-token token-two">everyone</div>
+          <div class="floating-token token-three">therefore</div>
+          <div class="hero-caption">
+            <span class="caption-index">01</span>
+            <span><b>Input → representation</b><br />The model begins with relationships between tokens.</span>
+          </div>
+        </div>
+
+        <button class="scroll-cue" id="scrollCue" type="button" aria-label="Scroll to the journey">
+          <span>SCROLL TO TRACE THE SIGNAL</span><i>↓</i>
+        </button>
+      </section>
+
+      <section class="story section-pad" id="story">
+        <div class="section-heading reveal">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> THE JOURNEY</div>
+            <h2>From raw text<br /><em>to a model signal.</em></h2>
+          </div>
+          <p>
+            The important idea is not that a model “knows” what a fallacy is.
+            It learns a useful representation from examples, then applies that representation to new text.
+          </p>
+        </div>
+
+        <div class="journey-layout">
+          <div class="journey-steps">
+            <article class="journey-step active reveal" data-step="0" tabindex="0" role="button" aria-pressed="true">
+              <span class="step-number">01</span>
+              <div>
+                <h3>Read the argument</h3>
+                <p>Keep the wording intact. Punctuation, negation, and connective words can carry reasoning signal.</p>
+              </div>
+            </article>
+            <article class="journey-step reveal delay-one" data-step="1" tabindex="0" role="button" aria-pressed="false">
+              <span class="step-number">02</span>
+              <div>
+                <h3>Build a representation</h3>
+                <p>Tokens become vectors — compact numerical descriptions that can move through a neural network.</p>
+              </div>
+            </article>
+            <article class="journey-step reveal delay-two" data-step="2" tabindex="0" role="button" aria-pressed="false">
+              <span class="step-number">03</span>
+              <div>
+                <h3>Look for structure</h3>
+                <p>Different architectures notice different evidence: local phrases, sequence context, or attention.</p>
+              </div>
+            </article>
+            <article class="journey-step reveal delay-three" data-step="3" tabindex="0" role="button" aria-pressed="false">
+              <span class="step-number">04</span>
+              <div>
+                <h3>Surface a hypothesis</h3>
+                <p>The output is a ranked model signal — a useful starting point for review, not a truth verdict.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="journey-visual reveal delay-one">
+            <div class="visual-label"><span class="pulse-dot"></span> SIGNAL TRACE <span class="visual-label-right">SELECT OR HOVER A STEP</span></div>
+            <div class="trace-card" id="traceCard">
+              <div class="trace-card-header">
+                <span class="trace-type" id="traceType">RAW ARGUMENT</span>
+                <span class="trace-counter" id="traceCounter">01 / 04</span>
+              </div>
+              <div class="trace-content" id="traceContent">
+                <div class="argument-line"><span class="line-number">01</span><span>“Everyone in our class agrees,</span></div>
+                <div class="argument-line highlighted"><span class="line-number">02</span><span>so this must be the right answer.”</span></div>
+              </div>
+              <div class="trace-footer"><span id="traceFooter">A sentence is still a sentence — before the model sees numbers.</span><span class="trace-arrow">→</span></div>
+            </div>
+            <div class="flow-rail" aria-hidden="true">
+              <span class="rail-node rail-node-one active"></span>
+              <span class="rail-node rail-node-two"></span>
+              <span class="rail-node rail-node-three"></span>
+              <span class="rail-node rail-node-four"></span>
+              <span class="rail-line"></span>
+              <span class="rail-beam"></span>
+            </div>
+            <div class="micro-caption"><span class="micro-icon">✦</span> A good visualization makes the invisible steps discussable.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="models section-pad" id="models">
+        <div class="section-heading models-heading reveal">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> THREE WAYS TO READ</div>
+            <h2>One task.<br /><em>Different lenses.</em></h2>
+          </div>
+          <p>
+            The comparison is more interesting than a leaderboard: each model creates a different story about what evidence matters.
+          </p>
+        </div>
+
+        <div class="model-tabs reveal" aria-label="Model architectures">
+          <button class="model-tab active" aria-pressed="true" data-model="cnn" type="button"><span class="tab-index">01</span><span><b>CNN</b><small>local patterns</small></span><i>↗</i></button>
+          <button class="model-tab" aria-pressed="false" data-model="bilstm" type="button"><span class="tab-index">02</span><span><b>BiLSTM</b><small>sequence context</small></span><i>↗</i></button>
+          <button class="model-tab" aria-pressed="false" data-model="transformer" type="button"><span class="tab-index">03</span><span><b>Transformer</b><small>attention links</small></span><i>↗</i></button>
+        </div>
+
+        <div class="model-explorer reveal delay-one">
+          <div class="model-stage" id="modelStage" aria-label="Animated model architecture"></div>
+          <div class="model-info">
+            <div class="model-info-top"><span class="model-kicker" id="modelKicker">LOCAL PATTERN DETECTOR</span><span class="model-index" id="modelIndex">01 / 03</span></div>
+            <h3 id="modelTitle">CNN <em>sees nearby phrases.</em></h3>
+            <p id="modelDescription">Sliding filters scan short windows of tokens, then keep the strongest pattern they find. It is fast, compact, and naturally good at phrase-level cues.</p>
+            <div class="model-question"><span>THE QUESTION IT ASKS</span><strong id="modelQuestion">“Which local phrase is carrying the argument?”</strong></div>
+            <div class="model-flow" id="modelFlow"></div>
+            <div class="model-note"><span class="note-mark">✦</span><span id="modelNote">Think of this as a highlighter that keeps the most useful fragments.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="lab section-pad" id="lab">
+        <div class="section-heading reveal">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> INTERACTIVE WALKTHROUGH</div>
+            <h2>Put an argument<br /><em>under the lens.</em></h2>
+          </div>
+          <p>
+            Use one of the examples, or write your own. Watch the presentation trace move from text to tokens to a human-readable hypothesis.
+          </p>
+        </div>
+
+        <div class="lab-grid">
+          <div class="input-panel reveal">
+            <div class="panel-topline"><span>01 / INPUT</span><span class="input-status"><i></i> ready to inspect</span></div>
+            <label for="argumentInput">Your argument</label>
+            <textarea id="argumentInput" rows="7" spellcheck="true">Everyone in our class agrees, so this must be the right answer.</textarea>
+            <div class="example-row" aria-label="Example arguments">
+              <button type="button" class="example-chip" data-example="Everyone in our class agrees, so this must be the right answer.">Appeal to popularity</button>
+              <button type="button" class="example-chip" data-example="Ignore her proposal — she cannot be trusted because she failed last year.">Attack the person</button>
+              <button type="button" class="example-chip" data-example="If we allow one late submission, soon nobody will follow any deadline.">Causal leap</button>
+            </div>
+            <div class="input-actions">
+              <button class="primary-button" id="analyzeButton" type="button"><span class="button-icon">✦</span> Animate the analysis</button>
+              <button class="ghost-button" id="clearButton" type="button">Clear</button>
+            </div>
+            <div class="privacy-note"><span>◎</span> Presentation mode only — no text leaves this page.</div>
+          </div>
+
+          <div class="analysis-panel reveal delay-one" aria-live="polite">
+            <div class="panel-topline"><span>02 / TRACE</span><span class="trace-live" id="analysisStatus"><i></i> waiting for input</span></div>
+              <div class="analysis-viewport" id="analysisViewport">
+                <div class="illustrative-badge"><span>◎</span> Illustrative browser cue · not trained-model inference</div>
+              <div class="analysis-placeholder" id="analysisPlaceholder">
+                <span class="placeholder-orb">✦</span>
+                <strong>Ready when you are.</strong>
+                <span>Press “Animate the analysis” to reveal an illustrative reasoning path.</span>
+              </div>
+              <div class="analysis-running hidden" id="analysisRunning">
+                <div class="running-line"><span class="running-dot"></span><span id="runningLabel">Splitting the argument into tokens</span><span class="running-ticks">•••</span></div>
+                <div class="progress-track"><span id="analysisProgress"></span></div>
+                <div class="token-stream" id="tokenStream"></div>
+              </div>
+              <div class="analysis-result hidden" id="analysisResult">
+                <div class="result-overline"><span class="result-spark">✦</span> ILLUSTRATIVE SIGNAL</div>
+                <div class="result-label-row"><h3 id="resultLabel">Appeal to popularity</h3><span class="result-badge">signal surfaced</span></div>
+                <p id="resultReason">The argument treats group agreement as evidence that the conclusion must be correct.</p>
+                <div class="signal-list" id="signalList"></div>
+                <div class="result-disclaimer"><span>↳</span> This is a model signal, not a fact-check, truth judgment, or final human interpretation.</div>
+                <button class="text-button small" id="replayButton" type="button">Replay the trace ↻</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="principles section-pad">
+        <div class="principles-card reveal">
+          <div class="principles-intro">
+            <div class="eyebrow"><span class="eyebrow-line"></span> THE RESPONSIBLE FRAME</div>
+            <h2>Useful signal.<br /><em>Not a verdict.</em></h2>
+            <p>Fallacy detection is a reasoning aid. The model can highlight a pattern worth examining; it cannot replace context, intent, or a human reading.</p>
+          </div>
+          <div class="principles-list">
+            <article><span>01</span><div><h3>Pattern ≠ proof</h3><p>A phrase can resemble a fallacy without making the entire argument invalid.</p></div></article>
+            <article><span>02</span><div><h3>Context changes meaning</h3><p>The same words can play different roles in different conversations.</p></div></article>
+            <article><span>03</span><div><h3>Explain the signal</h3><p>Showing the path is more useful than presenting an unexplained label.</p></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing section-pad reveal">
+        <div class="closing-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="eyebrow"><span class="eyebrow-line"></span> FALLACYLENS / END OF STORY</div>
+        <h2>Make the invisible<br /><em>worth discussing.</em></h2>
+        <p>A presentation layer for the question behind the model: <b>what evidence did it see, and why should we inspect it?</b></p>
+        <button class="primary-button" id="backToTop" type="button">Replay from the beginning ↑</button>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>FALLACY<span>LENS</span> / DEEP LEARNING PROJECT</span>
+      <span>Designed for a live mentor walkthrough · no aggregate accuracy scores shown here</span>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
