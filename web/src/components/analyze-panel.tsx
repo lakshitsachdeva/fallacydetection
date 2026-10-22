@@ -65,7 +65,14 @@ export function AnalyzePanel({ meta, model }: { meta: Meta; model: string }) {
             Paste a short argument, or load a held-out example from the strict LOGIC test split.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+          <CardContent className="flex flex-col gap-4">
+          {meta.demo_note && (
+            <Alert variant="info">
+              <Info />
+              <AlertTitle>Live model</AlertTitle>
+              <AlertDescription>{meta.demo_note}</AlertDescription>
+            </Alert>
+          )}
           <Textarea
             value={text}
             onChange={(e) => {
@@ -91,10 +98,12 @@ export function AnalyzePanel({ meta, model }: { meta: Meta; model: string }) {
               {busy === "analyze" && <Loader2 className="animate-spin" />}
               Classify
             </Button>
-            <Button variant="outline" onClick={() => run("compare")} disabled={tooShort || busy !== null}>
-              {busy === "compare" && <Loader2 className="animate-spin" />}
-              Compare all models
-            </Button>
+            {meta.models.length > 1 && (
+              <Button variant="outline" onClick={() => run("compare")} disabled={tooShort || busy !== null}>
+                {busy === "compare" && <Loader2 className="animate-spin" />}
+                Compare available models
+              </Button>
+            )}
             <Button variant="ghost" onClick={pickExample} disabled={!examples.length}>
               <Shuffle /> Load example
             </Button>

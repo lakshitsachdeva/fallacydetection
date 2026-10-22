@@ -59,6 +59,17 @@ The app has three tabs:
 
 The UI uses shadcn/ui with [ReUI](https://reui.io) components (Badge, Alert, Stepper, Timeline).
 
+## Vercel deployment
+
+Set the Vercel project's root directory to `web` (Vite preset). Its `api/`
+functions provide live inference from the measured TF-IDF + logistic-regression
+baseline without PyTorch or a missing neural checkpoint. The Results tab still
+shows the saved eight-configuration experiment. The Analyze tab identifies the
+live baseline so its prediction is not confused with the selected DistilBERT
+result. To regenerate the committed inference artifact after changing the
+training protocol, run `python web/scripts/export_baseline.py` from the repo
+root; it checks the export against the saved seed-42 predictions.
+
 ## Layout
 
 | Path | Contents |

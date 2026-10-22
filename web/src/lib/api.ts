@@ -7,7 +7,7 @@ export type ModelInfo = {
   n_params: number
   strict_macro_f1: number | null
 }
-export type Meta = { default_model: string | null; models: ModelInfo[]; labels: Label[]; device: string }
+export type Meta = { default_model: string | null; models: ModelInfo[]; labels: Label[]; device: string; demo_note?: string }
 export type Analysis = {
   model: string
   label: string
