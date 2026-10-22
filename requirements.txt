@@ -1,11 +1,15 @@
-# FallacyLens Phase 1 - Python dependencies (CPU-friendly)
-# On the server a prepared venv already exists at ~/fallacydetection/.venv
-# On Google Colab: pip install -r requirements.txt (torch is preinstalled there)
+# FallacyLens Python dependencies
+# For a CUDA GPU, install torch from https://pytorch.org first; CPU also works (slower DistilBERT runs).
 pandas>=2.0
 numpy>=1.26
 matplotlib>=3.8
 scikit-learn>=1.4
+scipy>=1.11
 torch>=2.2
+transformers>=4.45
+safetensors>=0.4
+fastapi>=0.110
+uvicorn>=0.29
 jupyter>=1.0
 nbconvert>=7.0
 ipykernel>=6.29

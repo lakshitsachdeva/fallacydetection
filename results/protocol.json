@@ -1,0 +1,34 @@
+{
+ "source": "https://raw.githubusercontent.com/causalNLP/logical-fallacy/2a3d09708122c0994279df034d867b80950700ea/data/",
+ "original_rows": {
+  "train": 1849,
+  "dev": 300,
+  "test": 300
+ },
+ "conflicting_train_texts": 5,
+ "train_after_conflicts": 1839,
+ "train_after_dedup": 1814,
+ "final_rows": {
+  "train": 1801,
+  "dev": 300,
+  "test": 300,
+  "test_strict": 283,
+  "climate_test": 211
+ },
+ "test_rows_seen_in_train_or_dev": 17,
+ "labels": [
+  "ad hominem",
+  "ad populum",
+  "appeal to emotion",
+  "circular reasoning",
+  "equivocation",
+  "fallacy of credibility",
+  "fallacy of extension",
+  "fallacy of logic",
+  "fallacy of relevance",
+  "false causality",
+  "false dilemma",
+  "faulty generalization",
+  "intentional"
+ ]
+}

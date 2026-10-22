@@ -12,9 +12,21 @@ logs/
 # Downloaded raw datasets (re-downloadable; keep the download code, not the data)
 data/raw/
 
+# Per-row predictions and quoted source texts are regenerated from the
+# upstream dataset; keep aggregate metrics in Git.
+results/final/*_predictions.csv
+results/final/selected_errors.csv
+results/final/token_sensitivity.csv
+
 # Large model artifacts (keep small checkpoints only if practical)
 *.pt
 *.pth
 *.bin
 !.gitkeep
 .setup-backup/
+
+# Trained models (regenerate with python -m fallacylens.train)
+models/
+# Frontend
+web/node_modules/
+web/dist/

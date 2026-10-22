@@ -1,0 +1,20 @@
+\begin{table*}[t]
+\centering
+\caption{Main results (mean $\pm$ std over 3 seeds). Strict test excludes every test text seen in train or dev. Climate is direct transfer with no climate training. cw = class-weighted loss.}
+\label{tab:main}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrcccc}
+\toprule
+Model & Params & Train (s) & Dev M-F1 & Strict Acc & Strict M-F1 & Climate M-F1 \\
+\midrule
+TF-IDF + LR & 101K & 2 & 0.489 $\pm$ 0.000 & 0.523 $\pm$ 0.000 & 0.473 $\pm$ 0.000 & 0.127 $\pm$ 0.000 \\
+TF-IDF + LR (cw) & 101K & 1 & 0.498 $\pm$ 0.000 & 0.523 $\pm$ 0.000 & 0.475 $\pm$ 0.000 & 0.128 $\pm$ 0.000 \\
+CNN & 437K & 13 & 0.444 $\pm$ 0.026 & 0.473 $\pm$ 0.016 & 0.423 $\pm$ 0.028 & 0.078 $\pm$ 0.012 \\
+CNN (cw) & 437K & 8 & 0.449 $\pm$ 0.035 & 0.464 $\pm$ 0.007 & 0.426 $\pm$ 0.012 & 0.090 $\pm$ 0.034 \\
+BiLSTM-Att & 584K & 10 & 0.391 $\pm$ 0.022 & 0.419 $\pm$ 0.014 & 0.358 $\pm$ 0.014 & 0.116 $\pm$ 0.007 \\
+BiLSTM-Att (cw) & 584K & 9 & 0.357 $\pm$ 0.046 & 0.346 $\pm$ 0.086 & 0.333 $\pm$ 0.091 & 0.083 $\pm$ 0.028 \\
+DistilBERT & 67.0M & 130 & 0.621 $\pm$ 0.010 & 0.585 $\pm$ 0.008 & 0.533 $\pm$ 0.008 & 0.133 $\pm$ 0.024 \\
+DistilBERT (cw) & 67.0M & 123 & 0.632 $\pm$ 0.017 & 0.603 $\pm$ 0.005 & \textbf{0.554 $\pm$ 0.010} & 0.146 $\pm$ 0.013 \\
+\bottomrule
+\end{tabular}
+\end{table*}
