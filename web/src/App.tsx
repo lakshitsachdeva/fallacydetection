@@ -45,7 +45,7 @@ export default function App() {
         setMeta(m)
         setModel(m.default_model ?? m.models[0]?.name ?? "")
       })
-      .catch(() => setError("Cannot reach the FallacyLens API. Start it with: python -m uvicorn app.server:app --port 8000"))
+      .catch(() => setError("Cannot reach the FallacyLens API. Please try reloading the page."))
     api.results().then(setSummary).catch(() => setSummary(null))
   }, [])
 
