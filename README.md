@@ -70,6 +70,7 @@ The UI uses shadcn/ui with [ReUI](https://reui.io) components (Badge, Alert, Ste
 | `figures/final/` | comparison, per-class heatmap, confusion matrix, class-weighting effect, dev curves |
 | `paper/` | IEEE-format paper (`fallacylens_ieee.tex`, compiled PDF) |
 | `docs/SPEAKER_NOTES.md` | four-person presentation script |
+| `docs/MASTER_GUIDE.md` | everything about the project in one file: lit review, protocol, all results, file map, viva Q&A |
 
 ## Limits
 
