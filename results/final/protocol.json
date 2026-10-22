@@ -1,0 +1,49 @@
+{
+  "source": "https://raw.githubusercontent.com/causalNLP/logical-fallacy/2a3d09708122c0994279df034d867b80950700ea/data/",
+  "sha256": {
+    "edu_train.csv": "0c6377dbf744ba85e60102eb9842cc770f385afcb2724f607e8e8a99f5d9545c",
+    "edu_dev.csv": "5c567eb12e604271d0ec10e456c5c0bedcf01bd8a2f56d84a5ca88744ece36af",
+    "edu_test.csv": "47f6b86ec6c5256e9db97844f86684dc1fdc72c593e14db230e532098f668534",
+    "climate_test.csv": "16f296fb38e594f92512a8f05e6b8c526a978fafe9fce8f924faaf7ad7d3082a"
+  },
+  "original_rows": {
+    "train": 1849,
+    "dev": 300,
+    "test": 300
+  },
+  "conflicting_train_texts": 5,
+  "train_after_conflicts": 1839,
+  "train_after_dedup": 1814,
+  "final_rows": {
+    "train": 1801,
+    "dev": 300,
+    "test": 300,
+    "test_exclusive": 283,
+    "climate_test": 211
+  },
+  "train_test_overlap_rows": 11,
+  "dev_test_overlap_rows": 6,
+  "test_rows_excluded_for_prior_text_exposure": 17,
+  "labels": [
+    "ad hominem",
+    "ad populum",
+    "appeal to emotion",
+    "circular reasoning",
+    "equivocation",
+    "fallacy of credibility",
+    "fallacy of extension",
+    "fallacy of logic",
+    "fallacy of relevance",
+    "false causality",
+    "false dilemma",
+    "faulty generalization",
+    "intentional"
+  ],
+  "seed": 42,
+  "vocab_size": 3124,
+  "word_max_len": 96,
+  "transformer_max_len": 128,
+  "pretrained_model": "prajjwal1/bert-tiny",
+  "pretrained_revision": "6f75de8b60a9f8a2fdf7b69cbd86d9e64bcb3837",
+  "torch_version": "2.14.1"
+}

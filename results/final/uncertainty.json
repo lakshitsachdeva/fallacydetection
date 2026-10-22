@@ -1,0 +1,14 @@
+{
+  "method": "2000 paired row bootstrap replicates, seed 42; fixed 13-label macro F1",
+  "selected_model": "cnn",
+  "runner_up_by_dev": "transformer_tuned",
+  "strict_test_macro_f1_95pct_interval": [
+    0.3479424573371904,
+    0.45700042478477054
+  ],
+  "selected_minus_runner_up_95pct_interval": [
+    -0.05916276208771952,
+    0.06330930677457824
+  ],
+  "selected_minus_runner_up_point": 0.0007855666675488093
+}

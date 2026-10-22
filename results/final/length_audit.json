@@ -1,0 +1,22 @@
+{
+  "train": {
+    "rows": 1801,
+    "over_word_limit": 26,
+    "over_transformer_limit": 13
+  },
+  "dev": {
+    "rows": 300,
+    "over_word_limit": 1,
+    "over_transformer_limit": 3
+  },
+  "test": {
+    "rows": 300,
+    "over_word_limit": 5,
+    "over_transformer_limit": 2
+  },
+  "climate_test": {
+    "rows": 211,
+    "over_word_limit": 2,
+    "over_transformer_limit": 1
+  }
+}
