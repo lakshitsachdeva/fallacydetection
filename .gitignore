@@ -24,3 +24,9 @@ results/final/token_sensitivity.csv
 *.bin
 !.gitkeep
 .setup-backup/
+
+# Trained models (regenerate with python -m fallacylens.train)
+models/
+# Frontend
+web/node_modules/
+web/dist/

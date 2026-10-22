@@ -1,5 +1,11 @@
 # FallacyLens: CNN, BiLSTM, and compact Transformer comparison
 
+> **Status note.** This report describes the single-seed pilot (`train_final.py`, BERT-tiny).
+> The final study reuses its data protocol and extends it to three seeds, DistilBERT, a TF-IDF
+> baseline and class-weighted variants of every model. See `paper/fallacylens_ieee.pdf`,
+> `results/final_results.csv` and `results/significance.csv` for the final numbers.
+
+
 **Final B.Tech deep learning project report, Phases 1–3**
 
 **Experiment date:** 22 October 2026

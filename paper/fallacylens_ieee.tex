@@ -1,0 +1,153 @@
+\documentclass[conference]{IEEEtran}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage[hidelinks]{hyperref}
+
+\input{generated.tex}
+
+\begin{document}
+
+\title{Does Pretraining Matter for Small-Data Logical Fallacy Classification? A Leakage-Controlled Comparison of CNN, BiLSTM and DistilBERT}
+
+\author{
+\IEEEauthorblockN{Author One, Author Two, Author Three, Author Four}
+\IEEEauthorblockA{Department of Computer Science and Engineering\\
+Institution Name, City, Country\\
+\{author1, author2, author3, author4\}@institution.edu}
+}
+
+\maketitle
+
+\begin{abstract}
+Logical fallacy classification asks a model to name the flawed reasoning pattern in a short argument. Published results on the LOGIC benchmark are hard to compare: papers differ in metric, model family and the handling of duplicated text across the official splits. We re-examine the task under one leakage-controlled protocol. Training texts with conflicting labels are removed, train/dev overlap is eliminated, and a strict test subset of \nStrict{} sentences excludes every text seen during training or model selection. On this protocol we compare a TF-IDF logistic-regression baseline, a convolutional network, an attention BiLSTM and a fine-tuned DistilBERT, each with and without class-weighted loss, over \nSeeds{} random seeds. Class-weighted DistilBERT, selected on the development set, reaches a strict-test macro-F1 of \fBertCw{}\,$\pm$\,\sdBertCw{}, against \fTfidf{} for TF-IDF and \fCnn{} for the CNN; the recurrent model is the weakest at \fLstm{}. Paired bootstrap intervals and McNemar tests show that the pretrained model's lead over every non-pretrained model is not a sampling artefact. Class weighting adds a small, non-significant gain for DistilBERT and seed-dependent changes elsewhere. All models collapse when applied without adaptation to climate-news fallacies (macro-F1 at most \climBertCw{}), so in-domain scores on quiz-style data say little about real discourse. We release the code, saved predictions and an interactive interface that shows word-level occlusion explanations.
+\end{abstract}
+
+\begin{IEEEkeywords}
+logical fallacy detection, argument mining, text classification, transformers, domain shift, reproducibility
+\end{IEEEkeywords}
+
+\section{Introduction}
+An argument can rest on true statements and still fail to support its conclusion. ``Everyone in my class uses this phone, so it must be the best one'' contains no false premise that a fact-checker could retrieve; its weakness is the step from popularity to quality. Fallacies of this kind are common in online debate, advertising and political speech, and they are a recurring topic in media-literacy teaching. Automatic fallacy classification would support moderation tools, debate feedback and teaching aids, provided its limits are understood.
+
+Jin et al.~\cite{jin2022logical} framed the problem as text classification and released LOGIC, about 2.4k quiz-style sentences labelled with 13 fallacy types, together with LOGICCLIMATE, a smaller set of sentences taken from climate-change news. Later work has moved toward larger language models and prompting~\cite{lei2024logicaltree,pan2024zeroshot}, new corpora~\cite{helwe2024mafalda,yeh2024cocolofa} and structure-aware methods~\cite{goffredo2022political}. A basic question has received less attention: on a dataset this small, how much does a pretrained encoder actually add over the standard non-pretrained text classifiers, once evaluation is made strict?
+
+Strictness matters here. While auditing LOGIC we found exact repeats across the official splits, a handful of training texts that appear twice with different labels, and test sentences that also occur in the training or development data. A model can score well on such sentences by memorising them. Results that mix memorised and unseen text overstate generalisation, and the overstatement differs between models with different capacity to memorise.
+
+This paper makes four contributions:
+\begin{itemize}
+\item A leakage-controlled protocol for LOGIC with a pinned data release, hash checks and a strict test subset of \nStrict{} unseen sentences.
+\item A controlled comparison of TF-IDF, CNN, BiLSTM and DistilBERT classifiers, each with and without class weighting, over \nSeeds{} seeds, with paired significance tests.
+\item A per-class and cross-domain analysis showing where every model family fails, in particular on rare classes and on climate-news text.
+\item An open implementation, including saved predictions and a web interface with word-level occlusion explanations.
+\end{itemize}
+
+\section{Related Work}
+\textbf{Fallacy and argument datasets.} Habernal et al.\ studied ad hominem attacks in web argumentation~\cite{habernal2018adhominem} and introduced the argument reasoning comprehension task~\cite{habernal2018arct}, showing that models struggle to recover the implicit warrant of an argument. Sahai et al.~\cite{sahai2021reddit} collected fallacies from Reddit discussions and found that conversational context helps. Goffredo et al.~\cite{goffredo2022political} annotated fallacies in U.S.\ presidential debates and combined transformers with argumentative features. Da San Martino et al.~\cite{dasanmartino2019propaganda} annotated propaganda techniques in news, several of which overlap with classical fallacies. LOGIC and LOGICCLIMATE~\cite{jin2022logical} remain the most widely used benchmarks for multi-class fallacy classification. MAFALDA~\cite{helwe2024mafalda} unifies several of these corpora under a three-level taxonomy for zero-shot evaluation, and CoCoLoFa~\cite{yeh2024cocolofa} provides 7.7k news comments written by crowd workers with LLM assistance.
+
+\textbf{Methods.} Jin et al.\ fine-tuned twelve pretrained language models on LOGIC and proposed a structure-aware classifier that masks content words so that the logical form becomes visible; they report 58.77\% micro-F1 for their best model and a sharp drop on climate text~\cite{jin2022logical}. Case-based reasoning with retrieved examples has also been explored~\cite{sourati2023case}. Recent studies prompt large language models, either with logical structure trees~\cite{lei2024logicaltree} or with multi-round zero-shot schemes~\cite{pan2024zeroshot}; MAFALDA reports that humans still outperform every evaluated LLM~\cite{helwe2024mafalda}. Our work is deliberately narrower: we hold the data protocol fixed and ask how standard neural classifiers~\cite{kim2014cnn,hochreiter1997lstm,bahdanau2015attention} compare with a compact pretrained transformer~\cite{vaswani2017attention,devlin2019bert,sanh2019distilbert}.
+
+\section{Data and Evaluation Protocol}
+
+\subsection{Datasets}
+LOGIC contains 1{,}849/300/300 train/dev/test sentences, each carrying one of 13 labels (Table~\ref{tab:perclass}). Most come from educational quiz sites. The classes are imbalanced: \emph{faulty generalization} has more than eight times as many training examples as \emph{equivocation}. Sentences are short, with a median of about 20 words. LOGICCLIMATE uses the same taxonomy on sentences from climate-change news; we use only its released test file, of which \nClimate{} rows have text and a label inside the LOGIC label set. Data are downloaded from the authors' repository at a fixed commit and verified by SHA-256 hash.
+
+\subsection{Leakage control}
+Texts are compared after whitespace normalisation and case folding. Fig.~\ref{fig:pipeline} summarises the steps. (i) Five training texts occur with two different labels; because the text alone cannot decide between them, all their copies are removed. (ii) Remaining training duplicates are collapsed. (iii) Training texts that also appear in the development set are removed, so that early stopping is not rewarded for memorisation. This leaves \nTrain{} training sentences. (iv) The official test set is kept intact for reference, and a \emph{strict} subset of \nStrict{} sentences is formed by dropping the \nSeen{} test texts that also occur in train or dev. Test labels are never used for fitting, early stopping or model selection. The strict test is our primary in-domain measure.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  box/.style={draw, rounded corners=2pt, align=center, font=\scriptsize, minimum height=0.85cm, text width=1.62cm, inner sep=2pt, fill=gray!6},
+  arr/.style={-{Stealth[length=4pt]}, semithick}]
+\node[box] (raw) {LOGIC\\pinned release\\(SHA-256)};
+\node[box, right=0.3cm of raw] (clean) {drop conflicts,\\dedupe, remove\\dev overlap};
+\node[box, right=0.3cm of clean] (enc) {tokenise\\+ encode\\(3 model types)};
+\node[box, right=0.3cm of enc] (sel) {select epoch\\on dev\\macro-F1};
+\node[box, below=0.55cm of sel] (strict) {strict test\\(\nStrict{} unseen)};
+\node[box, left=0.3cm of strict] (clim) {climate test\\direct transfer};
+\node[box, left=0.3cm of clim] (stats) {bootstrap +\\McNemar};
+\node[box, left=0.3cm of stats] (expl) {occlusion\\explanations};
+\draw[arr] (raw) -- (clean);
+\draw[arr] (clean) -- (enc);
+\draw[arr] (enc) -- (sel);
+\draw[arr] (sel) -- (strict);
+\draw[arr] (sel.south west) -- (clim.north east);
+\draw[arr] (strict) -- (clim);
+\draw[arr] (clim) -- (stats);
+\draw[arr] (stats) -- (expl);
+\end{tikzpicture}
+\caption{Experimental pipeline. Test labels enter only at the evaluation stage.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Metrics}
+Macro-F1 over the 13 classes is the headline metric because it weights rare classes equally with common ones. We also report accuracy, which equals micro-F1 for single-label prediction and is therefore the closest analogue to the micro-F1 reported by Jin et al.~\cite{jin2022logical}. The two papers' numbers remain not directly comparable, since our strict test removes seen sentences and our training set is cleaned.
+
+\section{Models}
+All models read the same cleaned text and output a softmax distribution over 13 classes (Fig.~\ref{fig:models}).
+
+\textbf{TF-IDF + LR.} Unigram and bigram TF-IDF features (minimum document frequency 2, sublinear term frequency) feed a multinomial logistic regression ($C=10$). It is a non-neural reference point.
+
+\textbf{CNN.} Following Kim~\cite{kim2014cnn}, 100-dimensional embeddings learned from scratch pass through 100 filters each of widths 3, 4 and 5 with ReLU, global max pooling, dropout 0.5 and a linear layer (444K parameters). The tokenizer keeps punctuation and stopwords, because words such as \emph{all}, \emph{therefore} and \emph{if} often mark the reasoning pattern.
+
+\textbf{BiLSTM-Att.} The same embeddings feed a bidirectional LSTM~\cite{hochreiter1997lstm} with 128 units per direction. Additive attention~\cite{bahdanau2015attention} pools the hidden states into one vector before dropout and the output layer.
+
+\textbf{DistilBERT.} The pretrained \texttt{distilbert-base-uncased} checkpoint~\cite{sanh2019distilbert} is fine-tuned end to end. It is a six-layer distilled version of BERT~\cite{devlin2019bert} with 66M parameters, using its own WordPiece tokenizer (maximum 128 tokens) and the standard classification head on the first token.
+
+\textbf{Class weighting.} Each model is also trained with cross-entropy weighted by $w_c = N/(K n_c)$, where $n_c$ is the number of training examples of class $c$, $N$ the training size and $K=13$; for TF-IDF the equivalent ``balanced'' option is used.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  l/.style={draw, rounded corners=1.5pt, font=\scriptsize, minimum width=2.15cm, minimum height=0.48cm, fill=gray!6, align=center},
+  arr/.style={-{Stealth[length=3pt]}},
+  h/.style={font=\scriptsize\bfseries}]
+\node[h] at (0,0.1) {CNN};
+\node[l] (c1) at (0,-0.45) {embedding 100-d};
+\node[l, below=0.18cm of c1] (c2) {conv $k{=}3,4,5$};
+\node[l, below=0.18cm of c2] (c3) {global max-pool};
+\node[l, below=0.18cm of c3] (c4) {dropout + linear};
+\node[h] at (2.75,0.1) {BiLSTM-Att};
+\node[l] (b1) at (2.75,-0.45) {embedding 100-d};
+\node[l, below=0.18cm of b1] (b2) {BiLSTM $2{\times}128$};
+\node[l, below=0.18cm of b2] (b3) {additive attention};
+\node[l, below=0.18cm of b3] (b4) {dropout + linear};
+\node[h] at (5.5,0.1) {DistilBERT};
+\node[l] (t1) at (5.5,-0.45) {WordPiece + pos.};
+\node[l, below=0.18cm of t1] (t2) {6 Transformer layers};
+\node[l, below=0.18cm of t2] (t3) {[CLS] vector};
+\node[l, below=0.18cm of t3] (t4) {linear head};
+\foreach \a/\b in {c1/c2,c2/c3,c3/c4,b1/b2,b2/b3,b3/b4,t1/t2,t2/t3,t3/t4} \draw[arr] (\a) -- (\b);
+\node[l, minimum width=7.6cm, below=0.4cm of b4, fill=blue!6] (soft) {softmax over 13 fallacy classes};
+\foreach \x in {c4,b4,t4} \draw[arr] (\x) -- (\x |- soft.north);
+\end{tikzpicture}
+\caption{The three neural architectures compared in this study.}
+\label{fig:models}
+\end{figure}
+
+\section{Experimental Setup}
+CNN and BiLSTM are trained with Adam~\cite{kingma2015adam} (learning rate $10^{-3}$, batch 32) for at most 20 epochs with patience 4 on dev macro-F1, and inputs are truncated at 54 tokens, the 95th percentile of training length. DistilBERT is trained with AdamW~\cite{loshchilov2019adamw} (learning rate $5\times10^{-5}$, weight decay 0.01, batch 16, 10\% linear warm-up, gradient clipping at 1.0, mixed precision) for 8 epochs, keeping the epoch with the best dev macro-F1. The vocabulary for the non-pretrained models is built from training text only (minimum frequency 2). Every configuration is run with seeds 42, 43 and 44 on a single NVIDIA RTX 3050 laptop GPU with PyTorch 2.14. For significance we use seed-42 predictions on the strict test: a paired bootstrap with 2{,}000 resamples of the macro-F1 difference~\cite{efron1993bootstrap} and an exact McNemar test on discordant predictions~\cite{mcnemar1947,dietterich1998approximate}.
+
+\section{Results}
+
+\input{results_body.tex}
+
+\section{Limitations and Responsible Use}
+LOGIC is small and drawn mostly from educational material, so even strict-test scores describe performance on textbook-style examples. The label set has no ``no fallacy'' class: any input, including a sound argument, receives one of 13 fallacy labels, which rules out unsupervised deployment as a detector. The released rows are single-label although real arguments can commit several fallacies at once~\cite{helwe2024mafalda}. We tested one pretrained model size and three seeds; larger encoders, more seeds or a tuning budget could change the margins. Occlusion scores show what a model is sensitive to, not why an argument is fallacious. For these reasons the accompanying interface presents predictions as hypotheses with probabilities and explanations, and states that it does not judge truth.
+
+\section{Conclusion}
+\input{conclusion_body.tex}
+
+\section*{Code and Data Availability}
+Code, saved per-seed predictions, figures and the web interface are available in the project repository (\url{https://github.com/lakshitsachdeva/fallacydetection}). LOGIC and LOGICCLIMATE are available from the original authors at \url{https://github.com/causalNLP/logical-fallacy}.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
