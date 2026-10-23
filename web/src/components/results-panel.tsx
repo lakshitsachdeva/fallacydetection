@@ -3,6 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { f3, params, type Summary } from "@/lib/api"
 
+function targetScore(score: number, selected: boolean) {
+  return Math.min(1, score * (selected ? 1.1 : 1.05))
+}
+
 export function ResultsPanel({ summary }: { summary: Summary }) {
   const exps = summary.experiments
   const selected = exps.find((e) => e.exp === summary.selected)
@@ -63,24 +67,70 @@ export function ResultsPanel({ summary }: { summary: Summary }) {
         </CardContent>
       </Card>
 
+      <Card className="min-w-0 border-sky-300/60">
+        <CardHeader>
+          <CardTitle>Illustrative improvement targets</CardTitle>
+          <CardDescription>
+            A relative 10% increase for the selected model and 5% for every other model. These are planning targets,
+            calculated from the measured strict-test scores; they are not evaluated results or additional correct predictions.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Model</TableHead>
+                <TableHead className="text-right">Relative target</TableHead>
+                <TableHead className="text-right">Measured accuracy</TableHead>
+                <TableHead className="text-right">Target accuracy</TableHead>
+                <TableHead className="text-right">Measured macro-F1</TableHead>
+                <TableHead className="text-right">Target macro-F1</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {exps.map((e) => {
+                const isSelected = e.exp === summary.selected
+                return (
+                  <TableRow key={e.exp}>
+                    <TableCell className="font-medium whitespace-nowrap">{e.display}</TableCell>
+                    <TableCell className="text-right tabular-nums">+{isSelected ? 10 : 5}%</TableCell>
+                    <TableCell className="text-right tabular-nums">{f3(e.metrics.test_strict.accuracy)}</TableCell>
+                    <TableCell className="text-right tabular-nums">{f3(targetScore(e.metrics.test_strict.accuracy, isSelected))}</TableCell>
+                    <TableCell className="text-right tabular-nums">{f3(e.metrics.test_strict.macro_f1)}</TableCell>
+                    <TableCell className="text-right tabular-nums">{f3(targetScore(e.metrics.test_strict.macro_f1, isSelected))}</TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="min-w-0">
           <CardHeader>
             <CardTitle>Per-class F1 — {selected?.display}</CardTitle>
-            <CardDescription>Strict test, mean over seeds. Classes ordered by number of training examples (middle column).</CardDescription>
+            <CardDescription>
+              Strict test, mean over seeds. Each class shows its measured F1 and a hypothetical 10% relative target.
+              Classes are ordered by number of training examples.
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-2.5">
+            <div className="text-muted-foreground grid grid-cols-[minmax(0,9rem)_2rem_minmax(0,1fr)_2.5rem_2.5rem] gap-2 text-xs">
+              <span>Class</span><span className="text-right">Train</span><span /><span className="text-right">F1</span><span className="text-right">Target</span>
+            </div>
             {summary.labels
               .map((l, i) => ({ l, n: summary.train_counts[i], f: selected?.per_class_f1_strict[i] ?? 0 }))
               .sort((a, b) => b.n - a.n)
               .map(({ l, n, f }) => (
-                <div key={l} className="grid grid-cols-[minmax(0,10.5rem)_2.25rem_minmax(0,1fr)_2.5rem] items-center gap-3 text-sm">
+                <div key={l} className="grid grid-cols-[minmax(0,9rem)_2rem_minmax(0,1fr)_2.5rem_2.5rem] items-center gap-2 text-sm">
                   <span className="leading-snug break-words capitalize">{l}</span>
                   <span className="text-muted-foreground text-right text-xs tabular-nums">{n}</span>
                   <div className="bg-muted h-2 overflow-hidden rounded-full">
                     <div className="h-full rounded-full bg-sky-600" style={{ width: `${Math.max(1, f * 100)}%` }} />
                   </div>
                   <span className="text-muted-foreground text-right tabular-nums">{f.toFixed(2)}</span>
+                  <span className="text-right font-medium tabular-nums">{targetScore(f, true).toFixed(2)}</span>
                 </div>
               ))}
           </CardContent>
